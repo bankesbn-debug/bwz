@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Schuldenuhr</title>
+
+<link href="https://fonts.cdnfonts.com/css/digital-7-mono" rel="stylesheet">
+
+<style>
+  body {
+    background: black;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .container {
+    background: #111;
+    padding: 60px 80px;
+    border: 12px solid #222;
+    box-shadow: 0 0 60px red;
+    text-align: center;
+  }
+
+  .title {
+    color: white;
+    font-family: Arial;
+    font-size: 26px;
+    margin-bottom: 30px;
+    letter-spacing: 4px;
+  }
+
+  .display {
+    font-family: 'Digital-7 Mono', monospace;
+    font-size: 110px;
+    color: red;
+    letter-spacing: 8px;
+    text-shadow: 
+      0 0 5px red,
+      0 0 15px red,
+      0 0 30px red;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="title">SCHULDENUHR</div>
+  <div class="display" id="counter">Lädt...</div>
+</div>
+
+<script>
+
+// 🔧 PARAMETER
+const START_DEBT = 1800000; // 1,8 Mio €
+const YEARS = 8;
+const START_DATE = new Date("2026-04-15T00:00:00").getTime();
+
+// Sekunden in 8 Jahren
+const TOTAL_SECONDS = YEARS * 365.25 * 24 * 60 * 60;
+
+// Reduktion pro Sekunde
+const DEBT_PER_SECOND = START_DEBT / TOTAL_SECONDS;
+
+const display = document.getElementById("counter");
+
+function update() {
+  const now = new Date().getTime();
+
+  // noch nicht gestartet
+  if (now < START_DATE) {
+    display.innerText = "START 15.04.2026";
+    return;
+  }
+
+  const elapsedSeconds = (now - START_DATE) / 1000;
+
+  let debt = START_DEBT - elapsedSeconds * DEBT_PER_SECOND;
+
+  if (debt <= 0) debt = 0;
+
+  // LED-Flackern (realistisch)
+  display.style.opacity = 0.85 + Math.random() * 0.25;
+
+  // leichtes Zittern wie echte Anzeige
+  debt -= Math.random() * 10;
+
+  // 2 Dezimalstellen + Tausenderpunkt
+  let formatted = debt
+    .toFixed(2)
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+  display.innerText = formatted + " €";
+}
+
+// sehr flüssige Anzeige
+setInterval(update, 80);
+update();
+
+</script>
+
+</body>
+</html>
