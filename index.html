@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Schuldenuhr</title>
+
+<style>
+  body {
+    background: black;
+    color: red;
+    font-family: "Courier New", monospace;
+    text-align: center;
+    margin-top: 80px;
+  }
+
+  #counter {
+    font-size: 70px;
+    letter-spacing: 4px;
+  }
+
+  #title {
+    color: white;
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="title">💸 Schuldenuhr</div>
+<div id="counter">Lädt...</div>
+
+<script>
+// 🔧 EINSTELLUNGEN
+const START_DEBT = 10000;      // Startschuld €
+const DAYS = 365;              // Laufzeit
+const START_DATE = new Date("2026-04-30T00:00:00").getTime();
+
+// Berechnung
+const TOTAL_SECONDS = DAYS * 24 * 60 * 60;
+
+function updateCounter() {
+  const now = new Date().getTime();
+
+  if (now < START_DATE) {
+    document.getElementById("counter").innerText =
+      "Startet am 30.04.2026";
+    return;
+  }
+
+  const elapsed = (now - START_DATE) / 1000;
+  const progress = elapsed / TOTAL_SECONDS;
+
+  let currentDebt = START_DEBT * (1 - progress);
+
+  if (currentDebt <= 0) {
+    currentDebt = 0;
+  }
+
+  document.getElementById("counter").innerText =
+    currentDebt.toLocaleString("de-DE", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }) + " €";
+}
+
+// alle 1 Sekunde updaten
+setInterval(updateCounter, 1000);
+updateCounter();
+</script>
+
+</body>
+</html>
