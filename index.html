@@ -62,7 +62,7 @@ const START_DATE = new Date("2026-04-15T00:00:00").getTime();
 // Sekunden in 8 Jahren
 const TOTAL_SECONDS = YEARS * 365.25 * 24 * 60 * 60;
 
-// Reduktion pro Sekunde
+// lineare Reduktion pro Sekunde
 const DEBT_PER_SECOND = START_DEBT / TOTAL_SECONDS;
 
 const display = document.getElementById("counter");
@@ -78,17 +78,15 @@ function update() {
 
   const elapsedSeconds = (now - START_DATE) / 1000;
 
+  // 🔴 exakte mathematische Berechnung (stabil)
   let debt = START_DEBT - elapsedSeconds * DEBT_PER_SECOND;
 
   if (debt <= 0) debt = 0;
 
-  // LED-Flackern (realistisch)
+  // 🔵 nur optisches LED-Flackern (kein Einfluss auf Wert)
   display.style.opacity = 0.85 + Math.random() * 0.25;
 
-  // leichtes Zittern wie echte Anzeige
-  debt -= Math.random() * 10;
-
-  // 2 Dezimalstellen + Tausenderpunkt
+  // Formatierung: 2 Dezimalstellen + Tausenderpunkt
   let formatted = debt
     .toFixed(2)
     .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -96,7 +94,7 @@ function update() {
   display.innerText = formatted + " €";
 }
 
-// sehr flüssige Anzeige
+// Update-Loop (smooth LED feeling)
 setInterval(update, 80);
 update();
 
